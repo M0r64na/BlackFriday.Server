@@ -6,7 +6,6 @@ import data.model.entity.Product;
 import data.model.entity.User;
 import data.repository.interfaces.IProductRepository;
 import java.math.BigDecimal;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public class ProductService implements IProductService {
     @Override
     public void createProduct(String name, String description,
                               int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
-                              String usernameCreatedBy) throws RemoteException {
+                              String usernameCreatedBy) {
         Product product = new Product(name, description, numberInStock, minPrice, currPrice);
 
         User createdAndLastModifiedBy = this.userService.getUserByUsername(usernameCreatedBy);
@@ -36,7 +35,7 @@ public class ProductService implements IProductService {
     @Override
     public Product updateProduct(String name, String description,
                                  int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
-                                 String usernameLastModifiedBy) throws RemoteException {
+                                 String usernameLastModifiedBy) {
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
         product.setName(name);
         product.setDescription(description);
@@ -48,7 +47,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Optional<Product> getOrderById(UUID id) {
+    public Optional<Product> getProductById(UUID id) {
         return this.productRepository.getById(id);
     }
 
@@ -68,7 +67,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy) throws RemoteException {
+    public void updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy) {
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
         product.setMinPrice(newMinPrice);
 
@@ -76,7 +75,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBy) throws RemoteException {
+    public void updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBy) {
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
         if(newCurrPrice.compareTo(product.getMinPrice()) < 0) throw new RuntimeException("Current price must be greater than or equal to minimum price");
 
@@ -86,7 +85,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void reduceNumberInStockOfProduct(String name, int quantity, String usernameLastModifiedBy) throws RemoteException {
+    public void reduceNumberInStockOfProduct(String name, int quantity, String usernameLastModifiedBy) {
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
 
         int newNumberInStock = product.getNumberInStock() - quantity;
@@ -97,7 +96,7 @@ public class ProductService implements IProductService {
         this.productRepository.update(product);
     }
 
-    private Product getProductAndSetLastModifiedBy(String name, String usernameLastModifiedBy) throws RemoteException {
+    private Product getProductAndSetLastModifiedBy(String name, String usernameLastModifiedBy) {
         Product product = this.productRepository.findByName(name);
 
         User lastModifiedBy = this.userService.getUserByUsername(usernameLastModifiedBy);

@@ -7,9 +7,6 @@ import data.model.entity.enums.RoleName;
 import data.model.entity.User;
 import application.util.PasswordEncoder;
 import data.repository.interfaces.IUserRepository;
-import jakarta.ws.rs.NotFoundException;
-
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +22,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void createUser(String username, String password) throws RemoteException {
+    public void createUser(String username, String password) {
         String encodedPassword = PasswordEncoder.encodePassword(password);
         Role clientRole = this.roleService.findRoleByName(RoleName.CLIENT);
         User user = new User(username, encodedPassword);
@@ -66,7 +63,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void initializeUsers() throws RemoteException {
+    public void initializeUsers() {
         if(!this.userRepository.getAll().isEmpty()) return;
 
         this.createUser("employee", "employee");

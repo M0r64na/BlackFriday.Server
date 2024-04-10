@@ -9,10 +9,8 @@ import data.model.entity.CampaignStop;
 import data.model.entity.Product;
 import data.repository.interfaces.ICampaignRepository;
 import data.repository.interfaces.ICampaignStopRepository;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +29,7 @@ public class CampaignService implements ICampaignService {
     }
 
     @Override
-    public void startCampaign(String username, Map<String, Double> productNamesAndDiscountPercentages) throws RemoteException {
+    public void startCampaign(String username, Map<String, Double> productNamesAndDiscountPercentages) {
         if(this.isActiveCampaignPresent())
             throw new IllegalStateException("Active campaign present. New campaign cannot be created until the active one is stopped");
 
@@ -41,7 +39,7 @@ public class CampaignService implements ICampaignService {
     }
 
     @Override
-    public void stopCurrentCampaign(String username) throws RemoteException {
+    public void stopCurrentCampaign(String username) {
         if(!this.isActiveCampaignPresent()) throw new IllegalStateException("No active campaign present to be stopped");
 
         List<Campaign> campaigns = this.campaignRepository.getAll();
@@ -71,7 +69,7 @@ public class CampaignService implements ICampaignService {
     }
 
     private void applyDiscountProductPricesAndCreateCampaignItems(String username, Campaign campaign,
-                                                           Map<String, Double> productNamesAndDiscountPercentages) throws RemoteException {
+                                                           Map<String, Double> productNamesAndDiscountPercentages) {
         for(String productName : productNamesAndDiscountPercentages.keySet()) {
             Product product = this.productService.findOrderByName(productName);
 
@@ -84,7 +82,7 @@ public class CampaignService implements ICampaignService {
         }
     }
 
-    private void restoreProductPrices(String username, Campaign campaign) throws RemoteException {
+    private void restoreProductPrices(String username, Campaign campaign) {
         Set<CampaignItem> campaignItems = campaign.getItems();
 
         for(CampaignItem campaignItem : campaignItems) {

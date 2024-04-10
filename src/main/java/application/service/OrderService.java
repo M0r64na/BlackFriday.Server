@@ -4,7 +4,6 @@ import application.service.interfaces.*;
 import data.model.entity.*;
 import data.model.entity.enums.OrderStatus;
 import data.repository.interfaces.IOrderRepository;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public void placeOrder(String username, Map<String, Integer> productNamesAndQuantities) throws RemoteException {
+    public void placeOrder(String username, Map<String, Integer> productNamesAndQuantities) {
         Status status = this.statusService.findStatusByName(OrderStatus.IN_PROCESS);
         User user = this.userService.getUserByUsername(username);
         Order order = new Order(status, user);
