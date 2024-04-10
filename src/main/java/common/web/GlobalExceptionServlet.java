@@ -1,6 +1,6 @@
-package common.exception.web;
+package common.web;
 
-import common.exception.service.interfaces.IExceptionHandlerService;
+import common.service.interfaces.IExceptionHandlerService;
 import common.factory.service.ExceptionHandlerServiceFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

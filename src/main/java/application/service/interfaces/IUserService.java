@@ -10,7 +10,7 @@ import java.util.UUID;
 // TODO add dto objects
 public interface IUserService extends Remote {
     void createUser(String username, String password) throws RemoteException;
-    User updateUser(String username, String password) throws RemoteException;
+    void updateUser(String username, String newPassword) throws RemoteException;
     Optional<User> getUserById(UUID id) throws RemoteException;
     List<User> getAllUsers() throws RemoteException;
     void deleteUserById(UUID id) throws RemoteException;

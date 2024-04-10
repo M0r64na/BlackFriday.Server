@@ -1,27 +1,32 @@
-package common.exception.service;
+package common.service;
 
 import com.google.gson.Gson;
-import common.exception.dto.ErrorResponseDto;
-import common.exception.service.interfaces.IExceptionHandlerService;
+import common.dto.ErrorResponseDto;
+import common.service.interfaces.IExceptionHandlerService;
 import common.factory.util.GsonFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ExceptionHandlerService implements IExceptionHandlerService {
+public class ExceptionHandlerService extends HttpResponseBuilder implements IExceptionHandlerService {
     private final Gson gson = GsonFactory.getInstance();
 
     @Override
     public void handleException(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String errorResponseAsJson = this.getErrorResponseAsJson(req, resp);
-        this.buildHttpResponse(resp, errorResponseAsJson);
+        int status = this.getErrorStatus(req);
+        String errorResponseAsJson = this.getErrorResponseAsJson(req, resp, status);
+
+        super.buildHttResponse(resp, errorResponseAsJson, status);
     }
 
-    private String getErrorResponseAsJson(HttpServletRequest req, HttpServletResponse resp) {
+    private int getErrorStatus(HttpServletRequest req) {
+        return (int) req.getAttribute("jakarta.servlet.error.status_code");
+    }
+
+    private String getErrorResponseAsJson(HttpServletRequest req, HttpServletResponse resp, int status) {
         String uri = (String) req.getAttribute("jakarta.servlet.error.request_uri");
         if(uri == null) uri = "Unknown";
 
@@ -30,8 +35,6 @@ public class ExceptionHandlerService implements IExceptionHandlerService {
 
         Throwable exception = (Throwable) req.getAttribute("jakarta.servlet.error.exception");
         String type = exception == null ? "Generic" : exception.getClass().getName();
-
-        Integer status = (Integer) req.getAttribute("jakarta.servlet.error.status_code");
 
         String message = (String) req.getAttribute("jakarta.servlet.error.message");
         if(message == null) message = "Unknown";
@@ -43,14 +46,5 @@ public class ExceptionHandlerService implements IExceptionHandlerService {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(uri, executorServlet, type, status, message, timestamp);
 
         return this.gson.toJson(errorResponseDto);
-    }
-
-    private void buildHttpResponse(HttpServletResponse resp, String errorResponseToJson) throws IOException {
-        OutputStream out = resp.getOutputStream();
-        resp.setContentType("application/json");
-        out.write(errorResponseToJson.getBytes());
-
-        out.flush();
-        out.close();
     }
 }

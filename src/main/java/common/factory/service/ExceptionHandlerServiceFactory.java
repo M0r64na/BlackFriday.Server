@@ -1,7 +1,7 @@
 package common.factory.service;
 
-import common.exception.service.ExceptionHandlerService;
-import common.exception.service.interfaces.IExceptionHandlerService;
+import common.service.ExceptionHandlerService;
+import common.service.interfaces.IExceptionHandlerService;
 
 public final class ExceptionHandlerServiceFactory {
     private static IExceptionHandlerService instance = null;

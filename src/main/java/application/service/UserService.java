@@ -7,6 +7,8 @@ import data.model.entity.enums.RoleName;
 import data.model.entity.User;
 import application.util.PasswordEncoder;
 import data.repository.interfaces.IUserRepository;
+import jakarta.ws.rs.NotFoundException;
+
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +35,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(String username, String password) {
+    public void updateUser(String username, String newPassword) {
         User user = this.getUserByUsername(username);
-        this.updatePassword(user);
+        this.updatePassword(user, newPassword);
 
-        return this.userRepository.update(user);
+        this.userRepository.update(user);
     }
 
     @Override
@@ -57,7 +59,10 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserByUsername(String username) {
-        return this.userRepository.getByUsername(username);
+        User user = this.userRepository.getByUsername(username);
+        if(user == null) throw new RuntimeException("No such user exists");
+
+        return user;
     }
 
     @Override
@@ -72,11 +77,11 @@ public class UserService implements IUserService {
         this.userRepository.update(employee);
     }
 
-    private void updatePassword(User user) {
-        String encodedPassword = this.getUserById(user.getId()).orElseThrow().getPassword();
+    private void updatePassword(User user, String newPassword) {
+        String encodedPassword = user.getPassword();
 
-        if(!encodedPassword.equals(user.getPassword())) {
-            encodedPassword = PasswordEncoder.encodePassword(user.getPassword());
+        if(!PasswordEncoder.verifyPasswords(encodedPassword, newPassword)) {
+            encodedPassword = PasswordEncoder.encodePassword(newPassword);
             user.setPassword(encodedPassword);
         }
     }
