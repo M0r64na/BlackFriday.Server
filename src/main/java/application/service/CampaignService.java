@@ -42,20 +42,23 @@ public class CampaignService implements ICampaignService {
     public void stopCurrentCampaign(String username) {
         if(!this.isActiveCampaignPresent()) throw new IllegalStateException("No active campaign present to be stopped");
 
-        List<Campaign> campaigns = this.campaignRepository.getAll();
-        Campaign campaign = campaigns.get(campaigns.size() - 1);
+        Campaign campaign = this.getLastCreatedCampaign();
         this.restoreProductPrices(username, campaign);
 
         CampaignStop campaignStop = new CampaignStop(campaign, this.userService.getUserByUsername(username));
         this.campaignStopRepository.create(campaignStop);
     }
 
-    private boolean isActiveCampaignPresent() {
-        List<Campaign> campaigns = this.campaignRepository.getAll();
+    @Override
+    public Campaign getLastCreatedCampaign() {
+        return this.campaignRepository.findLastCreated();
+    }
 
-        if(!campaigns.isEmpty()) {
-            Campaign currentCampaign = campaigns.get(campaigns.size() - 1);
-            CampaignStop campaignStop = this.campaignStopRepository.findByCampaignId(currentCampaign.getId());
+    private boolean isActiveCampaignPresent() {
+        Campaign campaign = this.getLastCreatedCampaign();
+
+        if(campaign != null) {
+            CampaignStop campaignStop = this.campaignStopRepository.findByCampaignId(campaign.getId());
 
             return campaignStop == null;
         }
@@ -76,8 +79,8 @@ public class CampaignService implements ICampaignService {
             double discountPercentage = productNamesAndDiscountPercentages.get(productName);
             BigDecimal priceWithDiscount = product.getCurrPrice()
                     .multiply(BigDecimal.valueOf(1 - discountPercentage / 100));
-            this.productService.updateProduct(productName, product.getDescription(), product.getNumberInStock(),
-                    product.getMinPrice(), priceWithDiscount, product.getLastModifiedBy().getUsername());
+            product = this.productService.updateProduct(productName, product.getDescription(), product.getNumberInStock(),
+                    product.getMinPrice(), priceWithDiscount, username);
 
             this.createCampaignItem(campaign, product, discountPercentage);
         }
@@ -91,9 +94,9 @@ public class CampaignService implements ICampaignService {
 
             double discountPercentage = campaignItem.getDiscountPercentage();
             BigDecimal priceWithoutDiscount = product.getCurrPrice()
-                    .divide(BigDecimal.valueOf(1 - discountPercentage / 100), RoundingMode.UNNECESSARY);
+                    .divide(BigDecimal.valueOf(1 - discountPercentage / 100), RoundingMode.CEILING);
             this.productService.updateProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
-                    product.getMinPrice(), priceWithoutDiscount, product.getLastModifiedBy().getUsername());
+                    product.getMinPrice(), priceWithoutDiscount, username);
         }
     }
 }
