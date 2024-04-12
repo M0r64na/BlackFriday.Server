@@ -22,7 +22,7 @@ public class Order extends EntityBase {
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     @NonNull
     private User createdBy;
-    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<OrderItem> items = new HashSet<>();
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn = LocalDateTime.now();

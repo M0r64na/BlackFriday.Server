@@ -3,6 +3,8 @@ package common.factory.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import common.util.GsonLocalDateTimeTypeAdapter;
+import common.util.GsonOrderItemTypeAdapter;
+import data.model.entity.OrderItem;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +16,7 @@ public final class GsonFactory {
     public static Gson getInstance() {
         if(instance == null) instance = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeTypeAdapter())
+                .registerTypeAdapter(OrderItem.class, new GsonOrderItemTypeAdapter())
                 .create();
 
         return instance;
