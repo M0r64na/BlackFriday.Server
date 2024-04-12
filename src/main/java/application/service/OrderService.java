@@ -32,7 +32,7 @@ public class OrderService implements IOrderService {
             int quantity = productNamesAndQuantities.get(name);
             this.productService.reduceNumberInStockOfProduct(name, quantity, username);
 
-            Product product = this.productService.findOrderByName(name);
+            Product product = this.productService.getProductByName(name);
             OrderItem orderItem = new OrderItem(order, product, quantity);
             order.getItems().add(orderItem);
         }

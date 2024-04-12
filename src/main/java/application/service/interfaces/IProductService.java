@@ -16,9 +16,7 @@ public interface IProductService {
                           String usernameLastModifiedBy);
     Optional<Product> getProductById(UUID id);
     List<Product> getAllProducts();
-    Product findOrderByName(String name);
-    void deleteOrderById(UUID id);
-    void updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy);
-    void updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBY);
+    Product getProductByName(String name);
+    void deleteProductById(UUID id);
     void reduceNumberInStockOfProduct(String name, int quantity, String usernameLastModifiedBy);
 }

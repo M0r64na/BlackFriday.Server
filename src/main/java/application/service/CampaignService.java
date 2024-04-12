@@ -71,12 +71,13 @@ public class CampaignService implements ICampaignService {
     private void applyDiscountProductPricesAndCreateCampaignItems(String username, Campaign campaign,
                                                            Map<String, Double> productNamesAndDiscountPercentages) {
         for(String productName : productNamesAndDiscountPercentages.keySet()) {
-            Product product = this.productService.findOrderByName(productName);
+            Product product = this.productService.getProductByName(productName);
 
             double discountPercentage = productNamesAndDiscountPercentages.get(productName);
             BigDecimal priceWithDiscount = product.getCurrPrice()
                     .multiply(BigDecimal.valueOf(1 - discountPercentage / 100));
-            this.productService.updateCurrPriceOfProduct(productName, priceWithDiscount, username);
+            this.productService.updateProduct(productName, product.getDescription(), product.getNumberInStock(),
+                    product.getMinPrice(), priceWithDiscount, product.getLastModifiedBy().getUsername());
 
             this.createCampaignItem(campaign, product, discountPercentage);
         }
@@ -91,7 +92,8 @@ public class CampaignService implements ICampaignService {
             double discountPercentage = campaignItem.getDiscountPercentage();
             BigDecimal priceWithoutDiscount = product.getCurrPrice()
                     .divide(BigDecimal.valueOf(1 - discountPercentage / 100), RoundingMode.UNNECESSARY);
-            this.productService.updateCurrPriceOfProduct(product.getName(), priceWithoutDiscount, username);
+            this.productService.updateProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
+                    product.getMinPrice(), priceWithoutDiscount, product.getLastModifiedBy().getUsername());
         }
     }
 }

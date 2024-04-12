@@ -1,12 +1,12 @@
 package web;
 
-import application.service.interfaces.IUserService;
-import common.factory.service.HttpResponseBuilderFactory;
-import common.factory.service.UserServiceFactory;
+import application.service.interfaces.IProductService;
 import com.google.gson.Gson;
+import common.factory.service.HttpResponseBuilderFactory;
+import common.factory.service.ProductServiceFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilder;
-import data.model.entity.User;
+import data.model.entity.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,24 +17,24 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "UserServlet", value = "/users")
-public class UserServlet extends HttpServlet {
-    private final IUserService userService = UserServiceFactory.getInstance();
+@WebServlet(name = "ProductServlet", value = "/products")
+public class ProductServlet extends HttpServlet {
+    private final IProductService productService = ProductServiceFactory.getInstance();
     private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
     private final Gson gson = GsonFactory.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
+        String name = req.getParameter("name");
         String responseToJson;
 
-        if(username == null) {
-            List<User> users = this.userService.getAllUsers();
-            responseToJson = this.gson.toJson(users);
+        if(name == null) {
+            List<Product> products = this.productService.getAllProducts();
+            responseToJson = this.gson.toJson(products);
         }
         else {
-            User user = this.userService.getUserByUsername(username);
-            responseToJson = this.gson.toJson(user);
+            Product product = this.productService.getProductByName(name);
+            responseToJson = this.gson.toJson(product);
         }
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
@@ -43,9 +43,10 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        User user = gson.fromJson(reqBody, User.class);
+        Product product = this.gson.fromJson(reqBody, Product.class);
 
-        this.userService.createUser(user.getUsername(), user.getPassword());
+        this.productService.createProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
+                product.getMinPrice(), product.getCurrPrice(), product.getCreatedBy().getUsername());
 
         this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_CREATED);
     }
@@ -53,10 +54,11 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        User user = gson.fromJson(reqBody, User.class);
+        Product product = this.gson.fromJson(reqBody, Product.class);
 
-        user = this.userService.updateUser(user.getUsername(), user.getPassword());
-        String responseToJson = this.gson.toJson(user);
+        product = this.productService.updateProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
+                product.getMinPrice(), product.getCurrPrice(), product.getLastModifiedBy().getUsername());
+        String responseToJson = this.gson.toJson(product);
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
     }
@@ -64,7 +66,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID id = UUID.fromString(req.getParameter("id"));
-        this.userService.deleteUserById(id);
+        this.productService.deleteProductById(id);
 
         this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_OK);
     }

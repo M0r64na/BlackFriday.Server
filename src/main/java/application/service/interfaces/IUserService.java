@@ -8,7 +8,7 @@ import java.util.UUID;
 // TODO add dto objects
 public interface IUserService {
     void createUser(String username, String password);
-    void updateUser(String username, String newPassword);
+    User updateUser(String username, String newPassword);
     Optional<User> getUserById(UUID id);
     List<User> getAllUsers();
     void deleteUserById(UUID id);

@@ -40,8 +40,8 @@ public class ProductService implements IProductService {
         product.setName(name);
         product.setDescription(description);
         product.setNumberInStock(numberInStock);
-        product.setMinPrice(minPrice);
-        product.setCurrPrice(currPrice);
+        this.updateMinPriceOfProduct(name, minPrice, usernameLastModifiedBy);
+        this.updateCurrPriceOfProduct(name, currPrice, usernameLastModifiedBy);
 
         return this.productRepository.update(product);
     }
@@ -57,31 +57,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product findOrderByName(String name) {
+    public Product getProductByName(String name) {
         return this.productRepository.findByName(name);
     }
 
     @Override
-    public void deleteOrderById(UUID id) {
+    public void deleteProductById(UUID id) {
         this.productRepository.deleteById(id);
-    }
-
-    @Override
-    public void updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy) {
-        Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
-        product.setMinPrice(newMinPrice);
-
-        this.productRepository.update(product);
-    }
-
-    @Override
-    public void updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBy) {
-        Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
-        if(newCurrPrice.compareTo(product.getMinPrice()) < 0) throw new RuntimeException("Current price must be greater than or equal to minimum price");
-
-        product.setCurrPrice(newCurrPrice);
-
-        this.productRepository.update(product);
     }
 
     @Override
@@ -92,6 +74,25 @@ public class ProductService implements IProductService {
         if(newNumberInStock < 0) throw new RuntimeException("Insufficient product quantity");
 
         product.setNumberInStock(newNumberInStock);
+
+        this.productRepository.update(product);
+    }
+
+    private void updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy) {
+        if(newMinPrice.compareTo(BigDecimal.ZERO) < 1) throw new RuntimeException("Minimum price of product must be greater than 0");
+
+        Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
+        product.setMinPrice(newMinPrice);
+
+        this.productRepository.update(product);
+    }
+
+    private void updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBy) {
+        Product product = this.getProductByName(name);
+
+        if(newCurrPrice.compareTo(product.getMinPrice()) < 0) throw new RuntimeException("Current price must be greater than or equal to minimum price");
+
+        product.setCurrPrice(newCurrPrice);
 
         this.productRepository.update(product);
     }

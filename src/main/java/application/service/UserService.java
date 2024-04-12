@@ -32,11 +32,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(String username, String newPassword) {
+    public User updateUser(String username, String newPassword) {
         User user = this.getUserByUsername(username);
         this.updatePassword(user, newPassword);
 
-        this.userRepository.update(user);
+        return this.userRepository.update(user);
     }
 
     @Override
