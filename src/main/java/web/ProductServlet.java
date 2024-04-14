@@ -6,6 +6,7 @@ import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.service.ProductServiceFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilder;
+import common.web.filter.util.FilterManager;
 import data.model.entity.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,6 +43,8 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Product product = this.gson.fromJson(reqBody, Product.class);
 
@@ -53,6 +56,8 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Product product = this.gson.fromJson(reqBody, Product.class);
 
@@ -65,6 +70,8 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         UUID id = UUID.fromString(req.getParameter("id"));
         this.productService.deleteProductById(id);
 

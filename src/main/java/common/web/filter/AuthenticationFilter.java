@@ -3,7 +3,6 @@ package common.web.filter;
 import common.factory.service.AuthenticationServiceFactory;
 import common.service.interfaces.IAuthenticationService;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.StringTokenizer;
-@WebFilter(filterName = "AuthenticationFilter", value = "/*")
+
 public class AuthenticationFilter implements Filter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final long EXPIRATION_TIME_IN_MILLISECONDS = 60 * 60 * 1000;

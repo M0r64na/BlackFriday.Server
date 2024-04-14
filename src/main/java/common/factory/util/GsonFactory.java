@@ -2,8 +2,8 @@ package common.factory.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import common.util.GsonLocalDateTimeTypeAdapter;
-import common.util.GsonOrderItemTypeAdapter;
+import common.adapter.GsonLocalDateTimeTypeAdapter;
+import common.adapter.GsonOrderItemTypeAdapter;
 import data.model.entity.OrderItem;
 
 import java.time.LocalDateTime;

@@ -7,6 +7,7 @@ import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.service.OrderServiceFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilder;
+import common.web.filter.util.FilterManager;
 import data.model.entity.Order;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,6 +28,8 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String idToString = req.getParameter("id");
         String responseToJson;
 
@@ -44,6 +47,8 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         Type typeResponseToJson = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> responseToJson = gson.fromJson(req.getReader(), typeResponseToJson);
 

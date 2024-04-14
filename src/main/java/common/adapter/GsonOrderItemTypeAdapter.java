@@ -1,4 +1,4 @@
-package common.util;
+package common.adapter;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

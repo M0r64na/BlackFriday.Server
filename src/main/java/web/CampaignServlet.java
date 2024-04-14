@@ -7,6 +7,7 @@ import common.factory.service.CampaignServiceFactory;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilder;
+import common.web.filter.util.FilterManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,6 +26,8 @@ public class CampaignServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         Type typeResponseToJson = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> responseToJson = gson.fromJson(req.getReader(), typeResponseToJson);
 
@@ -40,6 +43,8 @@ public class CampaignServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String username = req.getParameter("username");
         this.campaignService.stopCurrentCampaign(username);
 

@@ -6,6 +6,7 @@ import common.factory.service.UserServiceFactory;
 import com.google.gson.Gson;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilder;
+import common.web.filter.util.FilterManager;
 import data.model.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +26,8 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String username = req.getParameter("username");
         String responseToJson;
 
@@ -42,6 +45,8 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         User user = gson.fromJson(reqBody, User.class);
 

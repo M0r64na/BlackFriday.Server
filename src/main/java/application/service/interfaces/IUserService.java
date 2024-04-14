@@ -1,5 +1,6 @@
 package application.service.interfaces;
 
+import data.model.entity.Role;
 import data.model.entity.User;
 import java.util.List;
 import java.util.Optional;
