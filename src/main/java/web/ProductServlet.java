@@ -2,12 +2,13 @@ package web;
 
 import application.service.interfaces.IProductService;
 import com.google.gson.Gson;
+import common.dto.ProductDto;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.service.ProductServiceFactory;
 import common.factory.util.GsonFactory;
-import common.service.interfaces.IHttpResponseBuilderService;
+import common.builder.interfaces.IHttpResponseBuilder;
+import common.mapper.IProductMapper;
 import common.web.filter.util.FilterManager;
-import data.domain.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,20 +22,27 @@ import java.util.stream.Collectors;
 @WebServlet(name = "ProductServlet", value = "/products")
 public class ProductServlet extends HttpServlet {
     private final IProductService productService = ProductServiceFactory.getInstance();
-    private final IHttpResponseBuilderService httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IProductMapper mapper = IProductMapper.INSTANCE;
     private final Gson gson = GsonFactory.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String isPartOfCampaign = req.getParameter("campaign");
+        if(isPartOfCampaign != null && isPartOfCampaign.equals("true")) {
+            req.getRequestDispatcher("campaigns").forward(req, resp);
+            return;
+        }
+
         String name = req.getParameter("name");
         String responseToJson;
 
         if(name == null) {
-            List<Product> products = this.productService.getAllProducts();
+            List<ProductDto> products = this.productService.getAllProducts().stream().map(mapper::toRecord).collect(Collectors.toList());
             responseToJson = this.gson.toJson(products);
         }
         else {
-            Product product = this.productService.getProductByName(name);
+            ProductDto product = mapper.toRecord(this.productService.getProductByName(name));
             responseToJson = this.gson.toJson(product);
         }
 
@@ -46,10 +54,10 @@ public class ProductServlet extends HttpServlet {
         FilterManager.process(req, resp);
 
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Product product = this.gson.fromJson(reqBody, Product.class);
+        ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
 
-        this.productService.createProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
-                product.getMinPrice(), product.getCurrPrice(), product.getCreatedBy().getUsername());
+        this.productService.createProduct(product.name(), product.description(), product.numberInStock(),
+                product.minPrice(), product.currPrice(), product.createdBy().username());
 
         this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_CREATED);
     }
@@ -59,10 +67,11 @@ public class ProductServlet extends HttpServlet {
         FilterManager.process(req, resp);
 
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Product product = this.gson.fromJson(reqBody, Product.class);
+        ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
 
-        product = this.productService.updateProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
-                product.getMinPrice(), product.getCurrPrice(), product.getLastModifiedBy().getUsername());
+        product = mapper.toRecord(this.productService
+                .updateProduct(product.name(), product.description(), product.numberInStock(),
+                product.minPrice(), product.currPrice(), product.lastModifiedBy().username()));
         String responseToJson = this.gson.toJson(product);
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson);

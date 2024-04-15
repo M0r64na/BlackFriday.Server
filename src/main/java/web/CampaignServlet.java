@@ -3,26 +3,37 @@ package web;
 import application.service.interfaces.ICampaignService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import common.dto.CampaignItemDto;
 import common.factory.service.CampaignServiceFactory;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.util.GsonFactory;
-import common.service.interfaces.IHttpResponseBuilderService;
+import common.builder.interfaces.IHttpResponseBuilder;
+import common.mapper.ICampaignItemMapper;
 import common.web.filter.util.FilterManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "CampaignServlet", value = "/campaigns")
 public class CampaignServlet extends HttpServlet {
     private final ICampaignService campaignService = CampaignServiceFactory.getInstance();
-    private final IHttpResponseBuilderService httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final ICampaignItemMapper mapper = ICampaignItemMapper.INSTANCE;
     private final Gson gson = GsonFactory.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<CampaignItemDto> campaignItems = this.campaignService.getLastCreatedCampaign().getItems().stream().map(mapper::toRecord).toList();
+        String responseToJson = this.gson.toJson(campaignItems);
+
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

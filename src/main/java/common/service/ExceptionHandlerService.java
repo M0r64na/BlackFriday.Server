@@ -1,6 +1,7 @@
 package common.service;
 
 import com.google.gson.Gson;
+import common.builder.HttpResponseBuilder;
 import common.dto.ErrorResponseDto;
 import common.exception.ConflictException;
 import common.exception.NotAuthorizedException;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExceptionHandlerService extends HttpResponseBuilderService implements IExceptionHandlerService {
+public class ExceptionHandlerService extends HttpResponseBuilder implements IExceptionHandlerService {
     private final Gson gson = GsonFactory.getInstance();
     private final Map<Class<? extends Exception>, Integer> exceptionStatusMappings = new HashMap<>() {{
         put(ConflictException.class, HttpServletResponse.SC_CONFLICT);

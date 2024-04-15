@@ -1,12 +1,12 @@
-package common.service;
+package common.builder;
 
-import common.service.interfaces.IHttpResponseBuilderService;
+import common.builder.interfaces.IHttpResponseBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class HttpResponseBuilderService implements IHttpResponseBuilderService {
+public class HttpResponseBuilder implements IHttpResponseBuilder {
     @Override
     public void buildHttResponse(HttpServletResponse resp, String responseToJson, int status) throws IOException {
         OutputStream out = resp.getOutputStream();

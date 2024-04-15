@@ -1,11 +1,13 @@
 package web;
 
 import application.service.interfaces.IUserService;
+import common.dto.UserDto;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.service.UserServiceFactory;
 import com.google.gson.Gson;
 import common.factory.util.GsonFactory;
-import common.service.interfaces.IHttpResponseBuilderService;
+import common.builder.interfaces.IHttpResponseBuilder;
+import common.mapper.IUserMapper;
 import common.web.filter.util.FilterManager;
 import data.domain.User;
 import jakarta.servlet.ServletException;
@@ -21,7 +23,8 @@ import java.util.stream.Collectors;
 @WebServlet(name = "UserServlet", value = "/users")
 public class UserServlet extends HttpServlet {
     private final IUserService userService = UserServiceFactory.getInstance();
-    private final IHttpResponseBuilderService httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IUserMapper mapper = IUserMapper.INSTANCE;
     private final Gson gson = GsonFactory.getInstance();
 
     @Override
@@ -32,11 +35,11 @@ public class UserServlet extends HttpServlet {
         String responseToJson;
 
         if(username == null) {
-            List<User> users = this.userService.getAllUsers();
+            List<UserDto> users = this.userService.getAllUsers().stream().map(mapper::toRecord).collect(Collectors.toList());
             responseToJson = this.gson.toJson(users);
         }
         else {
-            User user = this.userService.getUserByUsername(username);
+            UserDto user = mapper.toRecord(this.userService.getUserByUsername(username));
             responseToJson = this.gson.toJson(user);
         }
 
@@ -59,7 +62,7 @@ public class UserServlet extends HttpServlet {
         User user = gson.fromJson(reqBody, User.class);
 
         user = this.userService.updateUser(user.getUsername(), user.getPassword());
-        String responseToJson = this.gson.toJson(user);
+        String responseToJson = this.gson.toJson(mapper.toRecord(user));
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
