@@ -1,15 +1,15 @@
 package common.factory.service;
 
-import common.service.HttpResponseBuilder;
-import common.service.interfaces.IHttpResponseBuilder;
+import common.service.HttpResponseBuilderService;
+import common.service.interfaces.IHttpResponseBuilderService;
 
 public final class HttpResponseBuilderFactory {
-    private static IHttpResponseBuilder instance = null;
+    private static IHttpResponseBuilderService instance = null;
 
     private HttpResponseBuilderFactory() {}
 
-    public static IHttpResponseBuilder getInstance() {
-        if(instance == null) instance = new HttpResponseBuilder();
+    public static IHttpResponseBuilderService getInstance() {
+        if(instance == null) instance = new HttpResponseBuilderService();
 
         return instance;
     }

@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import common.factory.service.CampaignServiceFactory;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.util.GsonFactory;
-import common.service.interfaces.IHttpResponseBuilder;
+import common.service.interfaces.IHttpResponseBuilderService;
 import common.web.filter.util.FilterManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,7 +21,7 @@ import java.util.Map;
 @WebServlet(name = "CampaignServlet", value = "/campaigns")
 public class CampaignServlet extends HttpServlet {
     private final ICampaignService campaignService = CampaignServiceFactory.getInstance();
-    private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IHttpResponseBuilderService httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
     private final Gson gson = GsonFactory.getInstance();
 
     @Override

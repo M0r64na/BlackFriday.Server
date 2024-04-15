@@ -4,6 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public interface IHttpResponseBuilder {
+public interface IHttpResponseBuilderService {
     void buildHttResponse(HttpServletResponse resp, String responseToJson, int status) throws IOException;
 }

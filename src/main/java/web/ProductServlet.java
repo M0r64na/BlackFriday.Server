@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import common.factory.service.HttpResponseBuilderFactory;
 import common.factory.service.ProductServiceFactory;
 import common.factory.util.GsonFactory;
-import common.service.interfaces.IHttpResponseBuilder;
+import common.service.interfaces.IHttpResponseBuilderService;
 import common.web.filter.util.FilterManager;
 import data.model.entity.Product;
 import jakarta.servlet.ServletException;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @WebServlet(name = "ProductServlet", value = "/products")
 public class ProductServlet extends HttpServlet {
     private final IProductService productService = ProductServiceFactory.getInstance();
-    private final IHttpResponseBuilder httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
+    private final IHttpResponseBuilderService httpResponseBuilder = HttpResponseBuilderFactory.getInstance();
     private final Gson gson = GsonFactory.getInstance();
 
     @Override

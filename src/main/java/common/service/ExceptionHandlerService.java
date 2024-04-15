@@ -7,11 +7,10 @@ import common.factory.util.GsonFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ExceptionHandlerService extends HttpResponseBuilder implements IExceptionHandlerService {
+public class ExceptionHandlerService extends HttpResponseBuilderService implements IExceptionHandlerService {
     private final Gson gson = GsonFactory.getInstance();
 
     @Override
