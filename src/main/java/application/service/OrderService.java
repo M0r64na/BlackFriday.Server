@@ -1,8 +1,9 @@
 package application.service;
 
 import application.service.interfaces.*;
-import data.model.entity.*;
-import data.model.entity.enums.OrderStatus;
+import common.exception.NotFoundException;
+import data.domain.*;
+import data.domain.enums.OrderStatus;
 import data.repository.interfaces.IOrderRepository;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +42,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Optional<Order> getOrderById(UUID id) {
-        return this.orderRepository.getById(id);
+    public Order getOrderById(UUID id) {
+        Optional<Order> order = this.orderRepository.getById(id);
+        if(order.isEmpty()) throw new NotFoundException("No such order found");
+
+        return order.get();
     }
 
     @Override

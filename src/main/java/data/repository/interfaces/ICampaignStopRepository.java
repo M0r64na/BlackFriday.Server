@@ -1,6 +1,6 @@
 package data.repository.interfaces;
 
-import data.model.entity.CampaignStop;
+import data.domain.CampaignStop;
 import data.repository.base.IRepository;
 import java.util.UUID;
 

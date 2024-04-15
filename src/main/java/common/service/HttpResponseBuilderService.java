@@ -18,4 +18,9 @@ public class HttpResponseBuilderService implements IHttpResponseBuilderService {
         out.flush();
         out.close();
     }
+
+    @Override
+    public void buildHttResponse(HttpServletResponse resp, String responseToJson) throws IOException {
+        this.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+    }
 }

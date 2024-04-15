@@ -1,6 +1,6 @@
 package data.repository;
 
-import data.model.entity.Order;
+import data.domain.Order;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.IOrderRepository;
 

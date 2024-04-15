@@ -3,15 +3,15 @@ package application.service;
 import application.service.interfaces.ICampaignService;
 import application.service.interfaces.IProductService;
 import application.service.interfaces.IUserService;
-import data.model.entity.Campaign;
-import data.model.entity.CampaignItem;
-import data.model.entity.CampaignStop;
-import data.model.entity.Product;
+import common.exception.ConflictException;
+import data.domain.Campaign;
+import data.domain.CampaignItem;
+import data.domain.CampaignStop;
+import data.domain.Product;
 import data.repository.interfaces.ICampaignRepository;
 import data.repository.interfaces.ICampaignStopRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class CampaignService implements ICampaignService {
     @Override
     public void startCampaign(String username, Map<String, Double> productNamesAndDiscountPercentages) {
         if(this.isActiveCampaignPresent())
-            throw new IllegalStateException("Active campaign present. New campaign cannot be created until the active one is stopped");
+            throw new ConflictException("Active campaign present. New campaign cannot be created until the active one is stopped");
 
         Campaign campaign = new Campaign(this.userService.getUserByUsername(username));
         this.applyDiscountProductPricesAndCreateCampaignItems(username, campaign, productNamesAndDiscountPercentages);
@@ -40,7 +40,7 @@ public class CampaignService implements ICampaignService {
 
     @Override
     public void stopCurrentCampaign(String username) {
-        if(!this.isActiveCampaignPresent()) throw new IllegalStateException("No active campaign present to be stopped");
+        if(!this.isActiveCampaignPresent()) throw new ConflictException("No active campaign present to be stopped");
 
         Campaign campaign = this.getLastCreatedCampaign();
         this.restoreProductPrices(username, campaign);

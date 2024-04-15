@@ -1,6 +1,6 @@
 package data.repository.base;
 
-import data.model.entity.base.EntityBase;
+import data.domain.base.EntityBase;
 import data.util.SessionFactoryProvider;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaQuery;

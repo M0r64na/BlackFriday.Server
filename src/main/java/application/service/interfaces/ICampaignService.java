@@ -1,6 +1,6 @@
 package application.service.interfaces;
 
-import data.model.entity.Campaign;
+import data.domain.Campaign;
 
 import java.util.Map;
 

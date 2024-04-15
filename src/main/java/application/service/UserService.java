@@ -2,9 +2,10 @@ package application.service;
 
 import application.service.interfaces.IRoleService;
 import application.service.interfaces.IUserService;
-import data.model.entity.Role;
-import data.model.entity.enums.RoleName;
-import data.model.entity.User;
+import common.exception.NotFoundException;
+import data.domain.Role;
+import data.domain.enums.RoleName;
+import data.domain.User;
 import application.util.PasswordEncoder;
 import data.repository.interfaces.IUserRepository;
 import java.util.List;
@@ -40,8 +41,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> getUserById(UUID id) {
-        return this.userRepository.getById(id);
+    public User getUserById(UUID id) {
+        Optional<User> user = this.userRepository.getById(id);
+        if(user.isEmpty()) throw new NotFoundException("No such user found");
+
+        return user.get();
     }
 
     @Override
@@ -57,7 +61,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserByUsername(String username) {
         User user = this.userRepository.getByUsername(username);
-        if(user == null) throw new RuntimeException("No such user exists");
+        if(user == null) throw new NotFoundException("No such user exists");
 
         return user;
     }

@@ -1,6 +1,6 @@
 package data.repository;
 
-import data.model.entity.Campaign;
+import data.domain.Campaign;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.ICampaignRepository;
 import org.hibernate.Session;

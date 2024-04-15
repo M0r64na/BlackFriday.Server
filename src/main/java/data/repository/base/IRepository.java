@@ -1,6 +1,6 @@
 package data.repository.base;
 
-import data.model.entity.base.EntityBase;
+import data.domain.base.EntityBase;
 import org.hibernate.HibernateException;
 import java.util.List;
 import java.util.Optional;

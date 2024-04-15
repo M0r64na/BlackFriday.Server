@@ -1,8 +1,8 @@
 package application.service;
 
 import application.service.interfaces.IRoleService;
-import data.model.entity.Role;
-import data.model.entity.enums.RoleName;
+import data.domain.Role;
+import data.domain.enums.RoleName;
 import data.repository.interfaces.IRoleRepository;
 
 public class RoleService implements IRoleService {

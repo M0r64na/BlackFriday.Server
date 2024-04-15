@@ -1,10 +1,9 @@
 package application.service.interfaces;
 
-import data.model.entity.Product;
+import data.domain.Product;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IProductService {
@@ -14,7 +13,7 @@ public interface IProductService {
     Product updateProduct(String name, String description,
                           int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
                           String usernameLastModifiedBy);
-    Optional<Product> getProductById(UUID id);
+    Product getProductById(UUID id);
     List<Product> getAllProducts();
     Product getProductByName(String name);
     void deleteProductById(UUID id);

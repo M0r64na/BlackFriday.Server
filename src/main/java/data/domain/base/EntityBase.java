@@ -1,4 +1,4 @@
-package data.model.entity.base;
+package data.domain.base;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

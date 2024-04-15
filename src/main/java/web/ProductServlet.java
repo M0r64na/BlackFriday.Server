@@ -7,7 +7,7 @@ import common.factory.service.ProductServiceFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilderService;
 import common.web.filter.util.FilterManager;
-import data.model.entity.Product;
+import data.domain.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,7 +38,7 @@ public class ProductServlet extends HttpServlet {
             responseToJson = this.gson.toJson(product);
         }
 
-        this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ProductServlet extends HttpServlet {
                 product.getMinPrice(), product.getCurrPrice(), product.getLastModifiedBy().getUsername());
         String responseToJson = this.gson.toJson(product);
 
-        this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
 
     @Override
@@ -75,6 +75,6 @@ public class ProductServlet extends HttpServlet {
         UUID id = UUID.fromString(req.getParameter("id"));
         this.productService.deleteProductById(id);
 
-        this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, "");
     }
 }

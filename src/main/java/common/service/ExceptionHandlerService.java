@@ -2,6 +2,9 @@ package common.service;
 
 import com.google.gson.Gson;
 import common.dto.ErrorResponseDto;
+import common.exception.ConflictException;
+import common.exception.NotAuthorizedException;
+import common.exception.NotFoundException;
 import common.service.interfaces.IExceptionHandlerService;
 import common.factory.util.GsonFactory;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,9 +12,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExceptionHandlerService extends HttpResponseBuilderService implements IExceptionHandlerService {
     private final Gson gson = GsonFactory.getInstance();
+    private final Map<Class<? extends Exception>, Integer> exceptionStatusMappings = new HashMap<>() {{
+        put(ConflictException.class, HttpServletResponse.SC_CONFLICT);
+        put(NotAuthorizedException.class, HttpServletResponse.SC_FORBIDDEN);
+        put(NotFoundException.class, HttpServletResponse.SC_NOT_FOUND);
+    }};
 
     @Override
     public void handleException(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -21,8 +31,14 @@ public class ExceptionHandlerService extends HttpResponseBuilderService implemen
         super.buildHttResponse(resp, errorResponseAsJson, status);
     }
 
+    private Class<?> getExceptionClass(HttpServletRequest req) {
+        return req.getAttribute("jakarta.servlet.error.exception").getClass();
+    }
+
     private int getErrorStatus(HttpServletRequest req) {
-        return (int) req.getAttribute("jakarta.servlet.error.status_code");
+        Class<?> exceptionClass = this.getExceptionClass(req);
+
+        return exceptionStatusMappings.getOrDefault(exceptionClass, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     private String getErrorResponseAsJson(HttpServletRequest req, HttpServletResponse resp, int status) {
@@ -32,8 +48,7 @@ public class ExceptionHandlerService extends HttpResponseBuilderService implemen
         String executorServlet = (String) req.getAttribute("jakarta.servlet.error.servlet_name");
         if(executorServlet == null) executorServlet = "Unknown";
 
-        Throwable exception = (Throwable) req.getAttribute("jakarta.servlet.error.exception");
-        String type = exception == null ? "Generic" : exception.getClass().getName();
+        String type = this.getExceptionClass(req).getName();
 
         String message = (String) req.getAttribute("jakarta.servlet.error.message");
         if(message == null) message = "Unknown";

@@ -1,4 +1,4 @@
-package common.web.filter.listener;
+package common.web.listener;
 
 import application.service.interfaces.IRoleService;
 import application.service.interfaces.IStatusService;

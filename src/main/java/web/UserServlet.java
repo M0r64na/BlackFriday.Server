@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilderService;
 import common.web.filter.util.FilterManager;
-import data.model.entity.User;
+import data.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -40,13 +40,11 @@ public class UserServlet extends HttpServlet {
             responseToJson = this.gson.toJson(user);
         }
 
-        this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
-
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         User user = gson.fromJson(reqBody, User.class);
 
@@ -63,14 +61,16 @@ public class UserServlet extends HttpServlet {
         user = this.userService.updateUser(user.getUsername(), user.getPassword());
         String responseToJson = this.gson.toJson(user);
 
-        this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         UUID id = UUID.fromString(req.getParameter("id"));
         this.userService.deleteUserById(id);
 
-        this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, "");
     }
 }

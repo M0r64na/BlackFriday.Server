@@ -1,7 +1,7 @@
 package data.repository;
 
-import data.model.entity.Status;
-import data.model.entity.enums.OrderStatus;
+import data.domain.Status;
+import data.domain.enums.OrderStatus;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.IStatusRepository;
 import org.hibernate.Session;

@@ -1,5 +1,6 @@
 package common.web.filter;
 
+import common.exception.NotAuthorizedException;
 import common.factory.service.AuthorizationServiceFactory;
 import common.service.interfaces.IAuthorizationService;
 import jakarta.servlet.*;
@@ -32,7 +33,7 @@ public class AuthorizationFilter implements Filter {
         System.out.println(username);
         boolean hasEmployeeRole = this.authorizationService.hasEmployeeRole(username);
 
-        if(!hasEmployeeRole) throw new IllegalStateException("Bad credentials for authorization");
+        if(!hasEmployeeRole) throw new NotAuthorizedException("Forbidden");
 
         filterChain.doFilter(req, resp);
     }

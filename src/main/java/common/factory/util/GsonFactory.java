@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import common.adapter.GsonLocalDateTimeTypeAdapter;
 import common.adapter.GsonOrderItemTypeAdapter;
-import data.model.entity.OrderItem;
+import data.domain.OrderItem;
 
 import java.time.LocalDateTime;
 

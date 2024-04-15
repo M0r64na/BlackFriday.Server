@@ -1,8 +1,8 @@
 package application.service;
 
 import application.service.interfaces.IStatusService;
-import data.model.entity.Status;
-import data.model.entity.enums.OrderStatus;
+import data.domain.Status;
+import data.domain.enums.OrderStatus;
 import data.repository.interfaces.IStatusRepository;
 
 public class StatusService implements IStatusService {

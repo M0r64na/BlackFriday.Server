@@ -8,13 +8,12 @@ import common.factory.service.OrderServiceFactory;
 import common.factory.util.GsonFactory;
 import common.service.interfaces.IHttpResponseBuilderService;
 import common.web.filter.util.FilterManager;
-import data.model.entity.Order;
+import data.domain.Order;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -37,11 +36,11 @@ public class OrderServlet extends HttpServlet {
             responseToJson = this.gson.toJson(orders);
         }
         else {
-            Optional<Order> order = this.orderService.getOrderById(UUID.fromString(idToString));
+            Order order = this.orderService.getOrderById(UUID.fromString(idToString));
             responseToJson = this.gson.toJson(order);
         }
 
-        this.httpResponseBuilder.buildHttResponse(resp, responseToJson, HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, responseToJson);
     }
 
     @Override

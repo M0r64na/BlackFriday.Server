@@ -1,6 +1,6 @@
 package data.repository;
 
-import data.model.entity.Product;
+import data.domain.Product;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.IProductRepository;
 import org.hibernate.Session;

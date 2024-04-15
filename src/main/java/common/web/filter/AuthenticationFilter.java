@@ -1,5 +1,6 @@
 package common.web.filter;
 
+import common.exception.NotAuthorizedException;
 import common.factory.service.AuthenticationServiceFactory;
 import common.service.interfaces.IAuthenticationService;
 import jakarta.servlet.*;
@@ -25,7 +26,7 @@ public class AuthenticationFilter implements Filter {
 
         if(session == null || session.getAttribute("username") == null) {
             String authenticationCredentials = req.getHeader(AUTHORIZATION_HEADER);
-            if(authenticationCredentials == null || !authenticationCredentials.startsWith("Basic ")) throw new IllegalStateException("Bad credentials");
+            if(authenticationCredentials == null || !authenticationCredentials.startsWith("Basic ")) throw new NotAuthorizedException("Bad credentials");
 
             authenticationCredentials = authenticationCredentials.replaceFirst("Basic ", "");
             String decodedAuthenticationCredentials = new String(Base64.getDecoder().decode(authenticationCredentials), StandardCharsets.UTF_8);
@@ -35,7 +36,7 @@ public class AuthenticationFilter implements Filter {
             String rawPassword = stringTokenizer.nextToken().trim();
             boolean isAuthenticationSuccessful = this.authenticationService.isAuthenticationSuccessful(username, rawPassword);
 
-            if(!isAuthenticationSuccessful) throw new IllegalStateException("Bad credentials");
+            if(!isAuthenticationSuccessful) throw new NotAuthorizedException("Bad credentials");
 
             session = req.getSession(true);
             session.setAttribute("username", username);
@@ -43,7 +44,7 @@ public class AuthenticationFilter implements Filter {
 
         if(session.getCreationTime() + EXPIRATION_TIME_IN_MILLISECONDS < currentTimeInMillis) {
             session.invalidate();
-            throw new IllegalStateException("Bad credentials");
+            throw new NotAuthorizedException("Bad credentials");
         }
 
         filterChain.doFilter(req, resp);

@@ -1,6 +1,6 @@
-package data.model.entity;
+package data.domain;
 
-import data.model.entity.base.EntityBase;
+import data.domain.base.EntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -48,6 +48,6 @@ public class CampaignServlet extends HttpServlet {
         String username = req.getParameter("username");
         this.campaignService.stopCurrentCampaign(username);
 
-        this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_OK);
+        this.httpResponseBuilder.buildHttResponse(resp, "");
     }
 }

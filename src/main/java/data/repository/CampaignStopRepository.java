@@ -1,6 +1,6 @@
 package data.repository;
 
-import data.model.entity.CampaignStop;
+import data.domain.CampaignStop;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.ICampaignStopRepository;
 import org.hibernate.Session;

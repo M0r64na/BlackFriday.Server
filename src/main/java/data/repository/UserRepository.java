@@ -1,6 +1,6 @@
 package data.repository;
 
-import data.model.entity.User;
+import data.domain.User;
 import data.repository.base.RepositoryBase;
 import data.repository.interfaces.IUserRepository;
 import org.hibernate.Session;

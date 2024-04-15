@@ -1,6 +1,6 @@
 package data.util;
 
-import data.model.entity.*;
+import data.domain.*;
 import lombok.Getter;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;

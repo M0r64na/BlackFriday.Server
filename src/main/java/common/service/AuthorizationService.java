@@ -1,9 +1,10 @@
 package common.service;
 
 import application.service.interfaces.IUserService;
+import common.exception.NotFoundException;
 import common.service.interfaces.IAuthorizationService;
-import data.model.entity.User;
-import data.model.entity.enums.RoleName;
+import data.domain.User;
+import data.domain.enums.RoleName;
 
 public class AuthorizationService implements IAuthorizationService {
     private final IUserService userService;
@@ -16,9 +17,12 @@ public class AuthorizationService implements IAuthorizationService {
     public boolean hasEmployeeRole(String username) {
         if(username == null) return false;
 
-        User user = this.userService.getUserByUsername(username);
-        if(user == null) return false;
-
-        return user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.EMPLOYEE));
+        try {
+            User user = this.userService.getUserByUsername(username);
+            return user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.EMPLOYEE));
+        }
+        catch (NotFoundException ex) {
+            return false;
+        }
     }
 }

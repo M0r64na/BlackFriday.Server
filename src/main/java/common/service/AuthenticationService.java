@@ -2,8 +2,9 @@ package common.service;
 
 import application.service.interfaces.IUserService;
 import application.util.PasswordEncoder;
+import common.exception.NotFoundException;
 import common.service.interfaces.IAuthenticationService;
-import data.model.entity.User;
+import data.domain.User;
 
 public class AuthenticationService implements IAuthenticationService {
     private final IUserService userService;
@@ -25,9 +26,12 @@ public class AuthenticationService implements IAuthenticationService {
         */
         if(username == null || rawPassword == null) return false;
 
-        User user = this.userService.getUserByUsername(username);
-        if(user == null) return false;
-
-        return PasswordEncoder.verifyPasswords(user.getPassword(), rawPassword);
+        try {
+            User user = this.userService.getUserByUsername(username);
+            return PasswordEncoder.verifyPasswords(user.getPassword(), rawPassword);
+        }
+        catch (NotFoundException ex) {
+            return false;
+        }
     }
 }
