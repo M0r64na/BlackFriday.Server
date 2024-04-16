@@ -2,6 +2,7 @@ package web;
 
 import application.service.interfaces.ICampaignService;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import common.dto.CampaignItemDto;
 import common.factory.service.CampaignServiceFactory;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "CampaignServlet", value = "/campaigns")
 public class CampaignServlet extends HttpServlet {
@@ -39,13 +41,13 @@ public class CampaignServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        Type typeResponseToJson = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> responseToJson = gson.fromJson(req.getReader(), typeResponseToJson);
+        String username = (String) req.getSession().getAttribute("username");
 
-        String username = (String) responseToJson.get("username");
-
+        String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        JsonObject reqBodyToJsonObject = this.gson.fromJson(reqBody, JsonObject.class);
+        JsonObject productNamesAndDiscountPercentagesToJsonObject = reqBodyToJsonObject.getAsJsonObject("productNamesAndDiscountPercentages");
         Type typeProductNamesAndDiscountPercentages = new TypeToken<Map<String, Double>>() {}.getType();
-        Map<String, Double> productNamesAndDiscountPercentages = gson.fromJson(gson.toJson(responseToJson.get("productNamesAndDiscountPercentages")), typeProductNamesAndDiscountPercentages);
+        Map<String, Double> productNamesAndDiscountPercentages = gson.fromJson(productNamesAndDiscountPercentagesToJsonObject, typeProductNamesAndDiscountPercentages);
 
         this.campaignService.startCampaign(username, productNamesAndDiscountPercentages);
 
@@ -56,7 +58,7 @@ public class CampaignServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = req.getParameter("username");
+        String username = (String) req.getSession().getAttribute("username");
         this.campaignService.stopCurrentCampaign(username);
 
         this.httpResponseBuilder.buildHttResponse(resp, "");

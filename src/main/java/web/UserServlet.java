@@ -58,6 +58,8 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FilterManager.process(req, resp);
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         User user = gson.fromJson(reqBody, User.class);
 

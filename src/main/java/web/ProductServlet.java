@@ -53,11 +53,13 @@ public class ProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
+        String username = (String) req.getSession().getAttribute("username");
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
 
         this.productService.createProduct(product.name(), product.description(), product.numberInStock(),
-                product.minPrice(), product.currPrice(), product.createdBy().username());
+                product.minPrice(), product.currPrice(), username);
 
         this.httpResponseBuilder.buildHttResponse(resp, "", HttpServletResponse.SC_CREATED);
     }
@@ -66,12 +68,14 @@ public class ProductServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
+        String username = (String) req.getSession().getAttribute("username");
+
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
 
         product = mapper.toRecord(this.productService
                 .updateProduct(product.name(), product.description(), product.numberInStock(),
-                product.minPrice(), product.currPrice(), product.lastModifiedBy().username()));
+                product.minPrice(), product.currPrice(), username));
         String responseToJson = this.gson.toJson(product);
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson);

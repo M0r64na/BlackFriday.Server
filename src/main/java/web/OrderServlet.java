@@ -2,6 +2,7 @@ package web;
 
 import application.service.interfaces.IOrderService;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import common.dto.OrderDto;
 import common.factory.service.HttpResponseBuilderFactory;
@@ -50,13 +51,13 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        Type typeResponseToJson = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> responseToJson = gson.fromJson(req.getReader(), typeResponseToJson);
+        String username = (String) req.getSession().getAttribute("username");
 
-        String username = (String) responseToJson.get("usernameCreatedBy");
-
+        String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        JsonObject reqBodyToJsonObject = this.gson.fromJson(reqBody, JsonObject.class);
+        JsonObject productNamesAndQuantitiesToJson = reqBodyToJsonObject.getAsJsonObject("productNamesAndQuantities");
         Type typeProductNamesAndQuantities = new TypeToken<Map<String, Integer>>() {}.getType();
-        Map<String, Integer> productNamesAndQuantities = gson.fromJson(gson.toJson(responseToJson.get("productNamesAndQuantities")), typeProductNamesAndQuantities);
+        Map<String, Integer> productNamesAndQuantities = gson.fromJson(productNamesAndQuantitiesToJson, typeProductNamesAndQuantities);
 
         this.orderService.placeOrder(username, productNamesAndQuantities);
 
