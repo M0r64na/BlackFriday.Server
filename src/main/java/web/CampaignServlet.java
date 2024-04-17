@@ -58,7 +58,7 @@ public class CampaignServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = (String) req.getSession().getAttribute("username");
+        String username = (String) req.getSession(false).getAttribute("username");
         this.campaignService.stopCurrentCampaign(username);
 
         this.httpResponseBuilder.buildHttResponse(resp, "");

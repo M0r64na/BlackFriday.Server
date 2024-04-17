@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import common.builder.HttpResponseBuilder;
 import common.dto.ErrorResponseDto;
 import common.exception.ConflictException;
+import common.exception.ForbiddenException;
 import common.exception.NotAuthorizedException;
 import common.exception.NotFoundException;
 import common.service.interfaces.IExceptionHandlerService;
@@ -20,7 +21,8 @@ public class ExceptionHandlerService extends HttpResponseBuilder implements IExc
     private final Gson gson = GsonFactory.getInstance();
     private final Map<Class<? extends Exception>, Integer> exceptionStatusMappings = new HashMap<>() {{
         put(ConflictException.class, HttpServletResponse.SC_CONFLICT);
-        put(NotAuthorizedException.class, HttpServletResponse.SC_FORBIDDEN);
+        put(NotAuthorizedException.class, HttpServletResponse.SC_UNAUTHORIZED);
+        put(ForbiddenException.class, HttpServletResponse.SC_FORBIDDEN);
         put(NotFoundException.class, HttpServletResponse.SC_NOT_FOUND);
     }};
 

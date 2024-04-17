@@ -51,7 +51,7 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = (String) req.getSession().getAttribute("username");
+        String username = (String) req.getSession(false).getAttribute("username");
 
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         JsonObject reqBodyToJsonObject = this.gson.fromJson(reqBody, JsonObject.class);

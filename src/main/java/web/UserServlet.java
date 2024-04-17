@@ -60,10 +60,10 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        User user = gson.fromJson(reqBody, User.class);
+        String username = (String) req.getSession(false).getAttribute("username");
+        String password = req.getParameter("password");
 
-        user = this.userService.updateUser(user.getUsername(), user.getPassword());
+        User user = this.userService.updateUser(username, password);
         String responseToJson = this.gson.toJson(mapper.toRecord(user));
 
         this.httpResponseBuilder.buildHttResponse(resp, responseToJson);

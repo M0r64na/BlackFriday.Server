@@ -53,7 +53,7 @@ public class ProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = (String) req.getSession().getAttribute("username");
+        String username = (String) req.getSession(false).getAttribute("username");
 
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
@@ -68,7 +68,7 @@ public class ProductServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = (String) req.getSession().getAttribute("username");
+        String username = (String) req.getSession(false).getAttribute("username");
 
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);

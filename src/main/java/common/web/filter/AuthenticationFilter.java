@@ -4,11 +4,13 @@ import common.exception.NotAuthorizedException;
 import common.factory.service.AuthenticationServiceFactory;
 import common.service.interfaces.IAuthenticationService;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.StringTokenizer;
 
@@ -40,9 +42,15 @@ public class AuthenticationFilter implements Filter {
 
             session = req.getSession(true);
             session.setAttribute("username", username);
+
+            resp.addCookie(new Cookie("JSESSIONID", session.getId()));
         }
 
         if(session.getCreationTime() + EXPIRATION_TIME_IN_MILLISECONDS < currentTimeInMillis) {
+            Cookie jsessionidRemoveCookie = new Cookie("JSESSIONID", "");
+            jsessionidRemoveCookie.setMaxAge(0);
+            resp.addCookie(jsessionidRemoveCookie);
+
             session.invalidate();
             throw new NotAuthorizedException("Bad credentials");
         }

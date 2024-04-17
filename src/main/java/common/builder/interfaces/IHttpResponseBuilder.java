@@ -1,7 +1,6 @@
 package common.builder.interfaces;
 
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 public interface IHttpResponseBuilder {

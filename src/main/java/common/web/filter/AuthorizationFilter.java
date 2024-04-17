@@ -1,5 +1,6 @@
 package common.web.filter;
 
+import common.exception.ForbiddenException;
 import common.exception.NotAuthorizedException;
 import common.factory.service.AuthorizationServiceFactory;
 import common.service.interfaces.IAuthorizationService;
@@ -33,7 +34,7 @@ public class AuthorizationFilter implements Filter {
         System.out.println(username);
         boolean hasEmployeeRole = this.authorizationService.hasEmployeeRole(username);
 
-        if(!hasEmployeeRole) throw new NotAuthorizedException("Forbidden");
+        if(!hasEmployeeRole) throw new ForbiddenException("Access denied");
 
         filterChain.doFilter(req, resp);
     }
