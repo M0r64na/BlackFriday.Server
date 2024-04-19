@@ -10,7 +10,7 @@ public interface IProductService {
     void createProduct(String name, String description,
                        int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
                        String usernameCreatedBy);
-    Product updateProduct(String name, String description,
+    Product updateProduct(String prevName, String name, String description,
                           int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
                           String usernameLastModifiedBy);
     Product getProductById(UUID id);

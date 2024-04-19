@@ -36,17 +36,16 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(String name, String description,
+    public Product updateProduct(String prevName, String name, String description,
                                  int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
                                  String usernameLastModifiedBy) {
-        Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
+        Product product = this.updateMinPriceOfProduct(prevName, minPrice, usernameLastModifiedBy);
+        product = this.updateCurrPriceOfProduct(prevName, currPrice, usernameLastModifiedBy);
         product.setName(name);
         product.setDescription(description);
         product.setNumberInStock(numberInStock);
-        product = this.updateMinPriceOfProduct(name, minPrice, usernameLastModifiedBy);
-        product = this.updateCurrPriceOfProduct(name, currPrice, usernameLastModifiedBy);
 
-        return product;
+        return this.productRepository.update(product);
     }
 
     @Override

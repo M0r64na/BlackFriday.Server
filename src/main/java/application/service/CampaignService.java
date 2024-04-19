@@ -79,7 +79,7 @@ public class CampaignService implements ICampaignService {
             double discountPercentage = productNamesAndDiscountPercentages.get(productName);
             BigDecimal priceWithDiscount = product.getCurrPrice()
                     .multiply(BigDecimal.valueOf(1 - discountPercentage / 100));
-            product = this.productService.updateProduct(productName, product.getDescription(), product.getNumberInStock(),
+            product = this.productService.updateProduct(productName, productName, product.getDescription(), product.getNumberInStock(),
                     product.getMinPrice(), priceWithDiscount, username);
 
             this.createCampaignItem(campaign, product, discountPercentage);
@@ -95,7 +95,7 @@ public class CampaignService implements ICampaignService {
             double discountPercentage = campaignItem.getDiscountPercentage();
             BigDecimal priceWithoutDiscount = product.getCurrPrice()
                     .divide(BigDecimal.valueOf(1 - discountPercentage / 100), RoundingMode.CEILING);
-            this.productService.updateProduct(product.getName(), product.getDescription(), product.getNumberInStock(),
+            this.productService.updateProduct(product.getName(), product.getName(), product.getDescription(), product.getNumberInStock(),
                     product.getMinPrice(), priceWithoutDiscount, username);
         }
     }

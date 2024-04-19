@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ public class ProductServlet extends HttpServlet {
             responseToJson = this.gson.toJson(products);
         }
         else {
+            name = URLDecoder.decode(name, StandardCharsets.UTF_8);
             ProductDto product = mapper.toRecord(this.productService.getProductByName(name));
             responseToJson = this.gson.toJson(product);
         }
@@ -70,11 +73,12 @@ public class ProductServlet extends HttpServlet {
 
         String username = (String) req.getSession(false).getAttribute("username");
 
+        String prevName = URLDecoder.decode(req.getParameter("prevName"), StandardCharsets.UTF_8);
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ProductDto product = this.gson.fromJson(reqBody, ProductDto.class);
 
         product = mapper.toRecord(this.productService
-                .updateProduct(product.name(), product.description(), product.numberInStock(),
+                .updateProduct(prevName, product.name(), product.description(), product.numberInStock(),
                 product.minPrice(), product.currPrice(), username));
         String responseToJson = this.gson.toJson(product);
 
