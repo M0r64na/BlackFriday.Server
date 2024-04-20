@@ -36,7 +36,7 @@ public class ProductServlet extends HttpServlet {
             return;
         }
 
-        String name = req.getParameter("name");
+        String name = URLDecoder.decode(req.getParameter("name"), StandardCharsets.UTF_8);
         String responseToJson;
 
         if(name == null) {
@@ -44,7 +44,6 @@ public class ProductServlet extends HttpServlet {
             responseToJson = this.gson.toJson(products);
         }
         else {
-            name = URLDecoder.decode(name, StandardCharsets.UTF_8);
             ProductDto product = mapper.toRecord(this.productService.getProductByName(name));
             responseToJson = this.gson.toJson(product);
         }

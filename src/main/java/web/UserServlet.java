@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +33,7 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = req.getParameter("username");
+        String username = URLDecoder.decode(req.getParameter("username"), StandardCharsets.UTF_8);
         String responseToJson;
 
         if(username == null) {
@@ -61,7 +63,7 @@ public class UserServlet extends HttpServlet {
         FilterManager.process(req, resp);
 
         String username = (String) req.getSession(false).getAttribute("username");
-        String password = req.getParameter("password");
+        String password = URLDecoder.decode(req.getParameter("password"), StandardCharsets.UTF_8);
 
         User user = this.userService.updateUser(username, password);
         String responseToJson = this.gson.toJson(mapper.toRecord(user));
