@@ -33,7 +33,7 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FilterManager.process(req, resp);
 
-        String username = URLDecoder.decode(req.getParameter("username"), StandardCharsets.UTF_8);
+        String username = req.getParameter("username");
         String responseToJson;
 
         if(username == null) {
@@ -41,6 +41,7 @@ public class UserServlet extends HttpServlet {
             responseToJson = this.gson.toJson(users);
         }
         else {
+            username = URLDecoder.decode(username, StandardCharsets.UTF_8);
             UserDto user = mapper.toRecord(this.userService.getUserByUsername(username));
             responseToJson = this.gson.toJson(user);
         }
