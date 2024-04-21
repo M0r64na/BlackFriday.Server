@@ -28,6 +28,8 @@ public class ProductService implements IProductService {
         User createdAndLastModifiedBy = this.userService.getUserByUsername(usernameCreatedBy);
         if(createdAndLastModifiedBy == null) throw new NotFoundException("No such user found");
 
+        if(currPrice.compareTo(minPrice) < 0) throw new ConflictException("Current price must be greater than or equal to minimum price");
+
         Product product = new Product(name, description, numberInStock, minPrice, currPrice);
         product.setCreatedBy(createdAndLastModifiedBy);
         product.setLastModifiedBy(createdAndLastModifiedBy);
