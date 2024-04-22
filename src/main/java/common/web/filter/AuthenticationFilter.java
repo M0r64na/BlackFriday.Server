@@ -1,5 +1,6 @@
 package common.web.filter;
 
+import common.constant.ExceptionMessage;
 import common.exception.NotAuthorizedException;
 import common.factory.service.AuthenticationServiceFactory;
 import common.service.interfaces.IAuthenticationService;
@@ -28,7 +29,7 @@ public class AuthenticationFilter implements Filter {
 
         if(session == null || session.getAttribute("username") == null) {
             String authenticationCredentials = req.getHeader(AUTHORIZATION_HEADER);
-            if(authenticationCredentials == null || !authenticationCredentials.startsWith("Basic ")) throw new NotAuthorizedException("Bad credentials");
+            if(authenticationCredentials == null || !authenticationCredentials.startsWith("Basic ")) throw new NotAuthorizedException(ExceptionMessage.BAD_CREDENTIALS_MESSAGE);
 
             authenticationCredentials = authenticationCredentials.replaceFirst("Basic ", "");
             String decodedAuthenticationCredentials = new String(Base64.getDecoder().decode(authenticationCredentials), StandardCharsets.UTF_8);
@@ -38,7 +39,7 @@ public class AuthenticationFilter implements Filter {
             String rawPassword = stringTokenizer.nextToken().trim();
             boolean isAuthenticationSuccessful = this.authenticationService.isAuthenticationSuccessful(username, rawPassword);
 
-            if(!isAuthenticationSuccessful) throw new NotAuthorizedException("Bad credentials");
+            if(!isAuthenticationSuccessful) throw new NotAuthorizedException(ExceptionMessage.BAD_CREDENTIALS_MESSAGE);
 
             session = req.getSession(true);
             session.setAttribute("username", username);
@@ -48,7 +49,7 @@ public class AuthenticationFilter implements Filter {
 
         if(session.getCreationTime() + EXPIRATION_TIME_IN_MILLISECONDS < currentTimeInMillis) {
             this.authenticationService.logout(session, resp);
-            throw new NotAuthorizedException("Bad credentials");
+            throw new NotAuthorizedException(ExceptionMessage.BAD_CREDENTIALS_MESSAGE);
         }
 
         filterChain.doFilter(req, resp);

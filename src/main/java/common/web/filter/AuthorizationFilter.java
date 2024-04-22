@@ -1,5 +1,6 @@
 package common.web.filter;
 
+import common.constant.ExceptionMessage;
 import common.exception.ForbiddenException;
 import common.exception.NotAuthorizedException;
 import common.factory.service.AuthorizationServiceFactory;
@@ -31,10 +32,9 @@ public class AuthorizationFilter implements Filter {
         HttpSession session = req.getSession(false);
 
         String username = Optional.ofNullable(session.getAttribute("username")).map(Object::toString).orElse(null);
-        System.out.println(username);
         boolean hasEmployeeRole = this.authorizationService.hasEmployeeRole(username);
 
-        if(!hasEmployeeRole) throw new ForbiddenException("Access denied");
+        if(!hasEmployeeRole) throw new ForbiddenException(ExceptionMessage.ACCESS_DENIED_MESSAGE);
 
         filterChain.doFilter(req, resp);
     }
