@@ -44,7 +44,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserById(UUID id) {
         Optional<User> user = this.userRepository.getById(id);
-        if(user.isEmpty()) throw new NotFoundException("No such user found");
+        if(user.isEmpty()) throw new NotFoundException(ExceptionMessage.NO_SUCH_USER_FOUND);
 
         return user.get();
     }

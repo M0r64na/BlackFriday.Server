@@ -18,7 +18,7 @@ public final class ExceptionMessage {
     public static final String INVALID_MINIMUM_PRICE = "Minimum price of product must be greater than 0";
     public static final String INVALID_CURRENT_PRICE_MESSAGE = "Current price must be greater than or equal to minimum price";
     public static final String INSUFFICIENT_PRODUCT_QUANTITY_MESSAGE = "Insufficient product quantity";
-    
+
     // Authentication and authorization
     public static final String BAD_CREDENTIALS_MESSAGE = "Bad credentials";
     public static final String ACCESS_DENIED_MESSAGE = "Access denied";
