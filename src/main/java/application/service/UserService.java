@@ -2,6 +2,7 @@ package application.service;
 
 import application.service.interfaces.IRoleService;
 import application.service.interfaces.IUserService;
+import common.constant.ExceptionMessage;
 import common.exception.NotFoundException;
 import data.domain.Role;
 import data.domain.enums.RoleName;
@@ -61,7 +62,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserByUsername(String username) {
         User user = this.userRepository.getByUsername(username);
-        if(user == null) throw new NotFoundException("No such user exists");
+        if(user == null) throw new NotFoundException(ExceptionMessage.NO_SUCH_USER_FOUND);
 
         return user;
     }

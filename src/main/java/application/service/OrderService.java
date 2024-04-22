@@ -1,6 +1,7 @@
 package application.service;
 
 import application.service.interfaces.*;
+import common.constant.ExceptionMessage;
 import common.exception.NotFoundException;
 import data.domain.*;
 import data.domain.enums.OrderStatus;
@@ -44,7 +45,7 @@ public class OrderService implements IOrderService {
     @Override
     public Order getOrderById(UUID id) {
         Optional<Order> order = this.orderRepository.getById(id);
-        if(order.isEmpty()) throw new NotFoundException("No such order found");
+        if(order.isEmpty()) throw new NotFoundException(ExceptionMessage.NO_SUCH_ORDER_FOUND_MESSAGE);
 
         return order.get();
     }

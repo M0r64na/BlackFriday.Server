@@ -3,6 +3,7 @@ package application.service;
 import application.service.interfaces.ICampaignService;
 import application.service.interfaces.IProductService;
 import application.service.interfaces.IUserService;
+import common.constant.ExceptionMessage;
 import common.exception.ConflictException;
 import data.domain.Campaign;
 import data.domain.CampaignItem;
@@ -31,7 +32,7 @@ public class CampaignService implements ICampaignService {
     @Override
     public void startCampaign(String username, Map<String, Double> productNamesAndDiscountPercentages) {
         if(this.isActiveCampaignPresent())
-            throw new ConflictException("Active campaign present. New campaign cannot be created until the active one is stopped");
+            throw new ConflictException(ExceptionMessage.ACTIVE_CAMPAIGN_PRESENT_MESSAGE);
 
         Campaign campaign = new Campaign(this.userService.getUserByUsername(username));
         this.applyDiscountProductPricesAndCreateCampaignItems(username, campaign, productNamesAndDiscountPercentages);
@@ -40,7 +41,7 @@ public class CampaignService implements ICampaignService {
 
     @Override
     public void stopCurrentCampaign(String username) {
-        if(!this.isActiveCampaignPresent()) throw new ConflictException("No active campaign present to be stopped");
+        if(!this.isActiveCampaignPresent()) throw new ConflictException(ExceptionMessage.NO_ACTIVE_CAMPAIGN_PRESENT_MESSAGE);
 
         Campaign campaign = this.getLastCreatedCampaign();
         this.restoreProductPrices(username, campaign);

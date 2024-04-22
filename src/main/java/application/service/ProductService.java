@@ -2,6 +2,7 @@ package application.service;
 
 import application.service.interfaces.IProductService;
 import application.service.interfaces.IUserService;
+import common.constant.ExceptionMessage;
 import common.exception.ConflictException;
 import common.exception.NotFoundException;
 import data.domain.Product;
@@ -26,9 +27,9 @@ public class ProductService implements IProductService {
                               int numberInStock, BigDecimal minPrice, BigDecimal currPrice,
                               String usernameCreatedBy) {
         User createdAndLastModifiedBy = this.userService.getUserByUsername(usernameCreatedBy);
-        if(createdAndLastModifiedBy == null) throw new NotFoundException("No such user found");
+        if(createdAndLastModifiedBy == null) throw new NotFoundException(ExceptionMessage.NO_SUCH_USER_FOUND);
 
-        if(currPrice.compareTo(minPrice) < 0) throw new ConflictException("Current price must be greater than or equal to minimum price");
+        if(currPrice.compareTo(minPrice) < 0) throw new ConflictException(ExceptionMessage.INVALID_CURRENT_PRICE_MESSAGE);
 
         Product product = new Product(name, description, numberInStock, minPrice, currPrice);
         product.setCreatedBy(createdAndLastModifiedBy);
@@ -53,7 +54,7 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductById(UUID id) {
         Optional<Product> product = this.productRepository.getById(id);
-        if(product.isEmpty()) throw new NotFoundException("No such product found");
+        if(product.isEmpty()) throw new NotFoundException(ExceptionMessage.NO_SUCH_PRODUCT_FOUND_MESSAGE);
 
         return product.get();
     }
@@ -66,7 +67,7 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductByName(String name) {
         Product product = this.productRepository.findByName(name);
-        if(product == null) throw new NotFoundException("No such product found");
+        if(product == null) throw new NotFoundException(ExceptionMessage.NO_SUCH_PRODUCT_FOUND_MESSAGE);
 
         return product;
     }
@@ -81,7 +82,7 @@ public class ProductService implements IProductService {
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
 
         int newNumberInStock = product.getNumberInStock() - quantity;
-        if(newNumberInStock < 0) throw new ConflictException("Insufficient product quantity");
+        if(newNumberInStock < 0) throw new ConflictException(ExceptionMessage.INSUFFICIENT_PRODUCT_QUANTITY_MESSAGE);
 
         product.setNumberInStock(newNumberInStock);
 
@@ -89,7 +90,7 @@ public class ProductService implements IProductService {
     }
 
     private Product updateMinPriceOfProduct(String name, BigDecimal newMinPrice, String usernameLastModifiedBy) {
-        if(newMinPrice.compareTo(BigDecimal.ZERO) < 1) throw new ConflictException("Minimum price of product must be greater than 0");
+        if(newMinPrice.compareTo(BigDecimal.ZERO) < 1) throw new ConflictException(ExceptionMessage.INVALID_MINIMUM_PRICE);
 
         Product product = this.getProductAndSetLastModifiedBy(name, usernameLastModifiedBy);
         product.setMinPrice(newMinPrice);
@@ -99,8 +100,8 @@ public class ProductService implements IProductService {
 
     private Product updateCurrPriceOfProduct(String name, BigDecimal newCurrPrice, String usernameLastModifiedBy) {
         Product product = this.getProductByName(name);
-        if(product == null) throw new NotFoundException("No such product found");
-        if(newCurrPrice.compareTo(product.getMinPrice()) < 0) throw new ConflictException("Current price must be greater than or equal to minimum price");
+        if(product == null) throw new NotFoundException(ExceptionMessage.NO_SUCH_PRODUCT_FOUND_MESSAGE);
+        if(newCurrPrice.compareTo(product.getMinPrice()) < 0) throw new ConflictException(ExceptionMessage.INVALID_CURRENT_PRICE_MESSAGE);
 
         product.setCurrPrice(newCurrPrice);
 
@@ -109,7 +110,7 @@ public class ProductService implements IProductService {
 
     private Product getProductAndSetLastModifiedBy(String name, String usernameLastModifiedBy) {
         User lastModifiedBy = this.userService.getUserByUsername(usernameLastModifiedBy);
-        if(lastModifiedBy == null) throw new NotFoundException("No such user found");
+        if(lastModifiedBy == null) throw new NotFoundException(ExceptionMessage.NO_SUCH_USER_FOUND);
 
         Product product = this.getProductByName(name);
         product.setLastModifiedBy(lastModifiedBy);
