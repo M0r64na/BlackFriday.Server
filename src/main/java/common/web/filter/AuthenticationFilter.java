@@ -47,11 +47,7 @@ public class AuthenticationFilter implements Filter {
         }
 
         if(session.getCreationTime() + EXPIRATION_TIME_IN_MILLISECONDS < currentTimeInMillis) {
-            Cookie jsessionidRemoveCookie = new Cookie("JSESSIONID", "");
-            jsessionidRemoveCookie.setMaxAge(0);
-            resp.addCookie(jsessionidRemoveCookie);
-
-            session.invalidate();
+            this.authenticationService.logout(session, resp);
             throw new NotAuthorizedException("Bad credentials");
         }
 

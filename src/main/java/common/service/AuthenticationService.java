@@ -5,6 +5,9 @@ import application.util.PasswordEncoder;
 import common.exception.NotFoundException;
 import common.service.interfaces.IAuthenticationService;
 import data.domain.User;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class AuthenticationService implements IAuthenticationService {
     private final IUserService userService;
@@ -33,5 +36,14 @@ public class AuthenticationService implements IAuthenticationService {
         catch (NotFoundException ex) {
             return false;
         }
+    }
+
+    @Override
+    public void logout(HttpSession session, HttpServletResponse resp) {
+        Cookie jsessionidRemoveCookie = new Cookie("JSESSIONID", "");
+        jsessionidRemoveCookie.setMaxAge(0);
+        resp.addCookie(jsessionidRemoveCookie);
+
+        session.invalidate();
     }
 }

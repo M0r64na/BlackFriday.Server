@@ -30,7 +30,7 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         String idToString = req.getParameter("id");
         String responseToJson;
@@ -49,7 +49,7 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, false);
 
         String username = (String) req.getSession(false).getAttribute("username");
 

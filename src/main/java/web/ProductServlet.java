@@ -54,7 +54,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         String username = (String) req.getSession(false).getAttribute("username");
 
@@ -69,7 +69,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         String username = (String) req.getSession(false).getAttribute("username");
 
@@ -87,7 +87,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         UUID id = UUID.fromString(req.getParameter("id"));
         this.productService.deleteProductById(id);

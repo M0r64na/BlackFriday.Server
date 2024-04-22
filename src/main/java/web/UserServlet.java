@@ -31,7 +31,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         String username = req.getParameter("username");
         String responseToJson;
@@ -61,7 +61,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, false);
 
         String username = (String) req.getSession(false).getAttribute("username");
         String password = URLDecoder.decode(req.getParameter("password"), StandardCharsets.UTF_8);
@@ -74,7 +74,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FilterManager.process(req, resp);
+        FilterManager.process(req, resp, true);
 
         UUID id = UUID.fromString(req.getParameter("id"));
         this.userService.deleteUserById(id);
